@@ -9,8 +9,8 @@ in a similar manner to [slf4j](http://www.slf4j.org/) for logging.
 
 ## Status
 
- * In discovery and feedback mode. Nothing released to maven central yet. TODO Javadoc [Archaius 2
- * API](https://github.com/Netflix/archaius/tree/2.x) maybe a better feature rich facade. Unfortunately it is not
+ * In discovery and feedback mode. Nothing released to maven central yet. TODO Javadoc 
+ * [Archaius 2 API](https://github.com/Netflix/archaius/tree/2.x) maybe a better feature rich facade. Unfortunately it is not
    released yet. For now this library is an easier copy'n paste.
 
 ## Goals
