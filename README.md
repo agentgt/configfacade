@@ -8,23 +8,21 @@ The aim is to make configfacade a shared and decoupled API for configuration
 in a similar manner to [slf4j](http://www.slf4j.org/) for logging.
 
 
-# Goals
+## Goals
 
-## Agnostic of source
-
-A simple `ConfigMap` interface is all that backing implementations need to implement.
-A default implementation is provided that can ready `Map<String,?>` and `java.util.Properties`.
-
-## Mainly Read Only
+### Agnostic of source and Read only
 
 In an effort to keep the API simple to implement backing implementations the API does not have any
-modification or loading methods.
+modification or resource loading methods.
 
-## Static and Dynamic properties
+A simple `ConfigMap` interface is all that backing implementations need to implement.
+A default implementation is provided that can use `Map<String,?>` and `java.util.Properties`.
+
+### Static and Dynamic properties
 
 The API provides a `Property` object that will always pull the latest similar to Archaius `DynamicProperty`.
 
-## Minimal dependencies and no static initialization
+### Minimal dependencies and no static initialization
 
 The only dependency is Guava at the moment and unlike other frameworks configfacade
 does not rely on a logging framework and thus will not perform an static initialization.
