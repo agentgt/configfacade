@@ -7,6 +7,10 @@
 The aim is to make configfacade a shared and decoupled API for configuration
 in a similar manner to [slf4j](http://www.slf4j.org/) for logging.
 
+## Status
+
+ * In discovery and feedback mode. Nothing released to maven central yet.
+ * TODO Javadoc
 
 ## Goals
 
@@ -18,6 +22,8 @@ modification or resource loading methods.
 A simple `ConfigMap` interface is all that backing implementations need to implement.
 A default implementation is provided that can use `Map<String,?>` and `java.util.Properties`.
 
+Property conversion should be done by the backing implementation.
+
 ### Static and Dynamic properties
 
 The API provides a `Property` object that will always pull the latest similar to Archaius `DynamicProperty`.
@@ -26,3 +32,36 @@ The API provides a `Property` object that will always pull the latest similar to
 
 The only dependency is Guava at the moment and unlike other frameworks configfacade
 does not rely on a logging framework and thus will not perform an static initialization.
+
+## Example Usage
+
+```java
+Map<String, Object> o =
+        newLinkedHashMap(); // could also be java.util.Properties or an immutablemap
+o.put("zone1.db.user", "admin");
+o.put("zone1.db.host", "127.0.0.1");
+o.put("zone1.db.port", "1111");
+
+Config config = ConfigFactory.fromMap(o);
+
+Config db = config.atPath("zone1.db");
+String user = db.getString("user").get();
+assertEquals("admin", user);
+
+int port = db.getInteger("port").get().intValue();
+assertEquals(1111, port);
+
+Property<String> host = db.getString("host"); // a lazy dynamic property
+
+assertEquals(host.get(), "127.0.0.1");
+
+o.put("zone1.db.host", "changed");
+
+assertEquals(host.get(), "changed");
+
+//Concerned with performance but still want dynamic properties.. You can cache the Property using Guava
+
+Supplier<String> h = Suppliers.memoizeWithExpiration(host, 5, TimeUnit.SECONDS);
+```
+
+See the unit tests for more examples.
