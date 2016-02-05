@@ -151,6 +151,32 @@ public class ConfigFactoryTest {
                 out.println("Error: " + t);
             }
         });
+        c.getInteger("port").addListener(new FutureCallback<Integer>() {
+
+            @Override
+            public void onSuccess(Integer result) {
+                out.println("port success: " + result);
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                out.println("port Error: " + t);
+            }
+        });
+
+        c.getInteger("port").or(5).addListener(new FutureCallback<Integer>() {
+
+            @Override
+            public void onSuccess(Integer result) {
+                out.println("default port success: " + result);
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                out.println("default port Error: " + t);
+            }
+        });
+
         Property<String> backup = c.getString("host").backup();
         Property<String> cached = c.getString("host").cache();
         Property<String> both = c.getString("host").cache().backup();
@@ -170,10 +196,49 @@ public class ConfigFactoryTest {
         assertEquals("localhost", both.get());
 
         o.put("host", "changed");
+        o.put("port", "NaN");
         c.replace(ConfigFactory.toConfigMap(o));
         assertEquals("changed", backup.get());
         assertEquals("changed", both.get());
 
+    }
+
+    @Test
+    public void testChained() throws Exception {
+
+        Map<String, Object> o = newLinkedHashMap();
+        o.put("host", "localhost");
+        o.put("port", 2);
+        Config c = ConfigFactory.fromMap(o);
+
+        final AtomicInteger i = new AtomicInteger();
+
+        Supplier<Optional<? extends Integer>> sup = new Supplier<Optional<? extends Integer>>() {
+
+            @Override
+            public Optional<? extends Integer> get() {
+                if (i.get() == 0)
+                    return Optional.absent();
+                return Optional.of(i.get());
+            }
+        };
+
+        c.getInteger("port").or(sup).or(5).addListener(new FutureCallback<Integer>() {
+
+            @Override
+            public void onSuccess(Integer result) {
+                out.println("default port success: " + result);
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                out.println("default port Error: " + t);
+            }
+        });
+        o.put("port", "werwe");
+        c.reload();
+        i.set(12);
+        c.reload();
     }
 
     public interface Example {

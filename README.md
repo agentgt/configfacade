@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/agentgt/configfacade.png)](https://travis-ci.org/agentgt/configfacade)
+
 # configfacade - the slf4j for configuration
  configfacade serves as a simple facade or abstraction for various Java configuration frameworks such as
  [typesafe config](https://github.com/typesafehub/config),
